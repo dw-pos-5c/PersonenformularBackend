@@ -24,6 +24,7 @@ namespace Persons.Services
         public Person AddSingle(PersonDTO person)
         {
             var dbEntry = Db.Persons.Add(person.ToPerson());
+            Db.SaveChanges();
             return dbEntry.Entity;
         }
     }

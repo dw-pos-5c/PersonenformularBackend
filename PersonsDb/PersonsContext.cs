@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -69,5 +70,21 @@ namespace PersonsDb
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public override int SaveChanges()
+        {
+            var entities = ChangeTracker.Entries() 
+                .Where(x => x.State == EntityState.Added || x.State == EntityState.Modified)
+                .Select(x => x.Entity);
+
+            foreach (var entity in entities)
+            {
+                Console.WriteLine(entity);
+                var validationContext = new ValidationContext(entity);
+                Validator.ValidateObject(entity, validationContext, true);
+            }
+
+            return base.SaveChanges();
+        }
     }
 }

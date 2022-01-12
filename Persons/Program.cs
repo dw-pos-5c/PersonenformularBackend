@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using Persons.Services;
 
 string corsKey = "_myCorsKey";
 string swaggerVersion = "v1";
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 // -------------------------------------------- ConfigureServices
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddScoped<PersonsService>();
 
 builder.Services.AddSwaggerGen(x =>
 {
@@ -47,7 +50,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI(x => x.SwaggerEndpoint( $"/swagger/{swaggerVersion}/swagger.json", swaggerTitle));
 }
 
-app.UseCors(corsKey);
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 app.UseHttpsRedirection();
 

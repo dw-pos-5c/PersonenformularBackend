@@ -37,5 +37,18 @@ namespace Persons.Controllers
 
             return Ok(PersonResponseDTO.From(person));
         }
+
+        [HttpGet("/api/regex")]
+        public IActionResult GetRegex()
+        {
+            return Ok(new
+            {
+                RegexProvider.firstname,
+                RegexProvider.lastname,
+                RegexProvider.date,
+                RegexProvider.address,
+                RegexProvider.tel,
+            });
+        }
     }
 }

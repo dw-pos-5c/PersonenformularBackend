@@ -4,27 +4,35 @@ namespace Persons.Services
 {
     public class PersonsService
     {
-        public PersonsContext Db { get; }
+        public readonly PersonsContext db;
 
         public PersonsService(PersonsContext db)
         {
-            Db = db;
+            this.db = db;
         }
 
-        public IEnumerable<Person> GetAll()
+        public IEnumerable<PersonResponseDTO> GetAll()
         {
-            return Db.Persons.AsEnumerable();
+            return db.Persons
+                .Include(x => x.Adress)
+                .Include(x => x.Adress.City)
+                .Select(person => PersonResponseDTO.From(person))
+                .ToList();
         }
 
-        public Person GetSingle(int id)
+        public PersonResponseDTO GetSingle(int id)
         {
-            return Db.Persons.First(x => x.Id == id);
+            return db.Persons
+                .Include(x => x.Adress)
+                .Include(x => x.Adress.City)
+                .Select(person => PersonResponseDTO.From(person))
+                .First(x => x.Id == id);
         }
 
         public Person AddSingle(PersonDTO person)
         {
-            var dbEntry = Db.Persons.Add(person.ToPerson());
-            Db.SaveChanges();
+            var dbEntry = db.Persons.Add(person.ToPerson());
+            db.SaveChanges();
             return dbEntry.Entity;
         }
     }

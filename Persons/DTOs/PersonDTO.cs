@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace Persons.DTOs
 {
@@ -26,13 +27,38 @@ namespace Persons.DTOs
 
         public Person ToPerson()
         {
+            var regex = new Regex(RegexProvider.address);
+            var groups = regex.Match(Address).Groups;
+
+            var parsed = long.TryParse(groups["postal"].Value, out long postal);
+
+            if (!parsed) return null;
+
+            var city = new City
+            {
+                CountryCode = groups["code"].Value,
+                Name = groups["city"].Value,
+                PostalCode = postal,
+            };
+
+            parsed = long.TryParse(groups["streetNr"].Value, out long streetNr);
+
+            if (!parsed) return null;
+
+            var address = new Adress
+            {
+                City = city,
+                StreetName = groups["street"].Value,
+                StreetNr = streetNr,
+            }; 
+
             return new Person
             {
                 Firstname = Firstname,
                 Lastname = Lastname,
                 Born = Born,
                 Tel = Tel,
-                Adress = new Adress(),
+                Adress = address,
             };
         }
     }

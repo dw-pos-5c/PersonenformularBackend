@@ -6,6 +6,8 @@
 
         public static PersonResponseDTO From(Person person)
         {
+            var address = person.Adress;
+
             return new PersonResponseDTO
             {
                 Id = person.Id,
@@ -13,7 +15,7 @@
                 Lastname = person.Lastname,
                 Born = person.Born,
                 Tel = person.Tel,
-                Address = person.Adress?.ToString() ?? "Empty",
+                Address = $"{address.City?.CountryCode}-{address.City?.PostalCode} {address.City?.Name}, {address.StreetName} {address.StreetNr}",
             };
         }
     }
